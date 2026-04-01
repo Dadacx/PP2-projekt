@@ -4,7 +4,7 @@ project(PP_projekt C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(PP_projekt main.c
-        contact.h
+        structs.h
         list.c
         list.h
         file_io.c
