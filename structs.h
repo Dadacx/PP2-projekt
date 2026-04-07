@@ -12,13 +12,13 @@ typedef struct {
     int ID;
     char surname[30];
     char name[20];
-    char phone[9];
+    char phone[10];
     Address address;
 } Contact;
 
 // Lista dwukierunkowa
 typedef struct node {
-    int data;
+    Contact data;
     struct node *next;
     struct node *prev;
 } Node;
