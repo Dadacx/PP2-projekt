@@ -1,0 +1,17 @@
+void delete_contact_by_id(DoublyLinkedList *list, int target_id) {
+    Node *current = list->head;
+
+    while (current != NULL) {
+        // Rzutujemy void* na nasz typ danych, żeby sprawdzić ID
+        Contact c = current->data;
+
+        if (c.ID == target_id) {
+            // Znaleźliśmy węzeł, teraz wywołujemy uniwersalną funkcję usuwającą
+            remove_node(list, current);
+            printf("Kontakt o ID %d został usunięty.\n", target_id);
+            return;
+        }
+        current = current->next;
+    }
+    printf("Nie znaleziono kontaktu o ID %d.\n", target_id);
+}

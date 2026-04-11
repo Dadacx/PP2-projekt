@@ -5,7 +5,7 @@ typedef struct {
     char street[50];
     char number[10];
     char city[50];
-    char postal_code[6];
+    char postal_code[7];
 } Address;
 
 typedef struct {

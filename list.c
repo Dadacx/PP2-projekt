@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 DoublyLinkedList CreateList() {
     DoublyLinkedList list;
@@ -17,7 +16,7 @@ Node *CreateNode(Contact data) {
     Node *node = (Node *) malloc(sizeof(Node));
     if (node == NULL) {
         printf("Bład alokacji pamieci!");
-        exit(-1);
+        exit(-1); // błąd przy alokacji pamięci zakończy program
     } else {
         node->data = data;
         node->next = NULL;
@@ -41,17 +40,17 @@ void push_back(DoublyLinkedList *list, Contact data) {
 }
 
 void pop_back(DoublyLinkedList *list) {
-    // 1. Zabezpieczenie przed pustą listą
+    // Zabezpieczenie przed pustą listą
     if (list->tail == NULL) {
-        return; // Nie ma czego usuwać, po prostu wychodzimy z funkcji
+        return;
     }
 
     Node *temp = list->tail;
-    list->tail = temp->prev; // Przesuwamy wskaźnik ogona na przedostatni element
+    list->tail = temp->prev;
 
-    // 2. Sprawdzenie, czy po przesunięciu ogona lista stała się pusta
+    // Sprawdzenie czy po przesunięciu ogona lista stała się pusta
     if (list->tail == NULL) {
-        list->head = NULL; // Skoro nie ma ogona, nie może być też głowy
+        list->head = NULL;
     } else {
         list->tail->next = NULL;
     }
@@ -66,14 +65,14 @@ void remove_node(DoublyLinkedList *list, Node *node) {
     if (node->prev != NULL) {
         node->prev->next = node->next;
     } else {
-        list->head = node->next; // Usuwamy głowę
+        list->head = node->next;
     }
 
     // Przepinanie wskaźnika 'prev' u następnika
     if (node->next != NULL) {
         node->next->prev = node->prev;
     } else {
-        list->tail = node->prev; // Usuwamy ogon
+        list->tail = node->prev;
     }
     free(node);
     list->size--;

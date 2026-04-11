@@ -4,7 +4,6 @@
 #include  <stdbool.h>
 
 DoublyLinkedList CreateList();
-Node* CreateNode(Contact data);
 void push_back(DoublyLinkedList* list, Contact data);
 void pop_back(DoublyLinkedList* list);
 void remove_node(DoublyLinkedList* list, Node* node);
