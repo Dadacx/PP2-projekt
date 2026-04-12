@@ -15,7 +15,16 @@ int main(void) {
     while (choose != 0) {
         menu();
         printf("Wybór: ");
-        scanf("%d", &choose);
+
+        // Sprawdzamy czy scanf poprawnie zczyta³ cyfrê
+        if (scanf("%d", &choose) != 1) {
+            choose = -1;
+        }
+
+        // Czyszczenie bufora (jeœli ktoœ wpisze tekst lub po wciœniêciu Entera dla cyfry)
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+
         switch (choose) {
             case 0: break;
             case 1: {
@@ -27,7 +36,7 @@ int main(void) {
                 break;
             }
             default: {
-                puts("Nieprawid³owy wybór!");
+                puts("Nieprawidlowy wybor!");
                 break;
             }
         }

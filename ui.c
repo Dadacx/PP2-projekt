@@ -8,12 +8,13 @@
 
 void menu() {
     puts("");
+    puts("= Menu Ksiazki Telefonicznej =");
     puts("0. Zakoñcz program");
     puts("1. Wyœwietl liste kontaktów");
     puts("2. Dodaj nowy kontakt");
 }
 void print_format(Contact c) {
-    printf("| %-10s %-10s | %15s %3s, %s %-10s | %-15s| ID: %d \n",c.name,c.surname,c.address.street,c.address.number,c.address.postal_code,c.address.city,c.phone,c.ID);
+    printf("| %-10s %-10s | %15s %3s, %6s %-10s | %-15s| ID: %d \n",c.name,c.surname,c.address.street,c.address.number,c.address.postal_code,c.address.city,c.phone,c.ID);
 }
 void print_book(DoublyLinkedList *list) {
     if (list->head == NULL) {
@@ -63,9 +64,6 @@ bool is_valid_number(char* number) {
 }
 
 bool add_contact(DoublyLinkedList *list) {
-    // na wszelki wypadek czyœci bufor
-    int c1;
-    while ((c1 = getchar()) != '\n' && c1 != EOF);
     Contact c;
 
     c.ID = (list->head == NULL) ? 1 : list->tail->data.ID + 1;
@@ -94,4 +92,7 @@ bool add_contact(DoublyLinkedList *list) {
     }
 
     push_back(list,c);
+
+    // Zwracam true, bo funkcja w deklaracji zwraca bool
+    return true;
 }

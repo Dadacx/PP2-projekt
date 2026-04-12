@@ -6,5 +6,6 @@
 void menu();
 void print_book(DoublyLinkedList *list);
 bool add_contact(DoublyLinkedList *list);
+void get_text(char* bufor, int length);
 
 #endif //PP_PROJEKT_UI_H

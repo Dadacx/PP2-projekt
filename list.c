@@ -15,8 +15,8 @@ DoublyLinkedList CreateList() {
 Node *CreateNode(Contact data) {
     Node *node = (Node *) malloc(sizeof(Node));
     if (node == NULL) {
-        printf("BÅ‚ad alokacji pamieci!");
-        exit(-1); // bÅ‚Ä…d przy alokacji pamiÄ™ci zakoÅ„czy program
+        printf("B³ad alokacji pamieci!");
+        exit(-1); // b³¹d przy alokacji pamiêci zakoñczy program
     } else {
         node->data = data;
         node->next = NULL;
@@ -40,7 +40,7 @@ void push_back(DoublyLinkedList *list, Contact data) {
 }
 
 void pop_back(DoublyLinkedList *list) {
-    // Zabezpieczenie przed pustÄ… listÄ…
+    // Zabezpieczenie przed pust¹ list¹
     if (list->tail == NULL) {
         return;
     }
@@ -48,7 +48,7 @@ void pop_back(DoublyLinkedList *list) {
     Node *temp = list->tail;
     list->tail = temp->prev;
 
-    // Sprawdzenie czy po przesuniÄ™ciu ogona lista staÅ‚a siÄ™ pusta
+    // Sprawdzenie czy po przesuniêciu ogona lista sta³a siê pusta
     if (list->tail == NULL) {
         list->head = NULL;
     } else {
@@ -61,14 +61,14 @@ void pop_back(DoublyLinkedList *list) {
 void remove_node(DoublyLinkedList *list, Node *node) {
     if (list == NULL || node == NULL) return;
 
-    // Przepinanie wskaÅºnika 'next' u poprzednika
+    // Przepinanie wskaŸnika 'next' u poprzednika
     if (node->prev != NULL) {
         node->prev->next = node->next;
     } else {
         list->head = node->next;
     }
 
-    // Przepinanie wskaÅºnika 'prev' u nastÄ™pnika
+    // Przepinanie wskaŸnika 'prev' u nastêpnika
     if (node->next != NULL) {
         node->next->prev = node->prev;
     } else {
