@@ -4,6 +4,7 @@
 #include "list.h"
 #include "structs.h"
 #include "ui.h"
+#include "file_io.h"
 
 int main(void) {
     SetConsoleOutputCP(1250);
@@ -11,6 +12,10 @@ int main(void) {
 
     int choose = -1;
     DoublyLinkedList list = CreateList();
+    if (!load_from_file(&list, "database.txt")) {
+        puts("B³¹d podczas pobierania danych z pliku!");
+        return 1;
+    }
 
     while (choose != 0) {
         menu();
@@ -35,6 +40,11 @@ int main(void) {
                 add_contact(&list);
                 break;
             }
+            case 3: {
+                save_to_file(&list, "database.txt");
+                break;
+            }
+
             default: {
                 puts("Nieprawidlowy wybor!");
                 break;
