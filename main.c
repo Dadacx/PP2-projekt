@@ -14,14 +14,14 @@ int main(void) {
 
     while (choose != 0) {
         menu();
-        printf("Wybór: ");
+        printf("Wybï¿½r: ");
 
-        // Sprawdzamy czy scanf poprawnie zczyta³ cyfrê
+        // Sprawdzamy czy scanf poprawnie zczytaï¿½ cyfrï¿½
         if (scanf("%d", &choose) != 1) {
             choose = -1;
         }
 
-        // Czyszczenie bufora (jeœli ktoœ wpisze tekst lub po wciœniêciu Entera dla cyfry)
+        // Czyszczenie bufora (jeï¿½li ktoï¿½ wpisze tekst lub po wciï¿½niï¿½ciu Entera dla cyfry)
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
 

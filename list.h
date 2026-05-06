@@ -1,7 +1,9 @@
 #ifndef PP_PROJEKT_LIST_H
 #define PP_PROJEKT_LIST_H
 #include "structs.h"
-#include  <stdbool.h>
+#include <stdbool.h>
+
+typedef int (*CompareFunc)(Contact, Contact);
 
 DoublyLinkedList CreateList();
 void push_back(DoublyLinkedList* list, Contact data);
@@ -11,5 +13,14 @@ void clear(DoublyLinkedList* list);
 bool is_empty(DoublyLinkedList* list);
 int size(DoublyLinkedList* list);
 void print(DoublyLinkedList *list, void (*print_func)(Contact));
+
+// tu masz te nowe
+void delete_contact_by_id(DoublyLinkedList* list, int target_id);
+bool edit_contact_by_id(DoublyLinkedList* list, int target_id, Contact new_data);
+Node* search_contact_by_surname(DoublyLinkedList* list, const char* surname);
+void sort_list(DoublyLinkedList* list, CompareFunc cmp_func, bool ascending);
+
+int cmp_by_surname(Contact a, Contact b);
+int cmp_by_name(Contact a, Contact b);
 
 #endif //PP_PROJEKT_LIST_H

@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
 DoublyLinkedList CreateList() {
     DoublyLinkedList list;
@@ -15,8 +17,8 @@ DoublyLinkedList CreateList() {
 Node *CreateNode(Contact data) {
     Node *node = (Node *) malloc(sizeof(Node));
     if (node == NULL) {
-        printf("B³ad alokacji pamieci!");
-        exit(-1); // b³¹d przy alokacji pamiêci zakoñczy program
+        printf("Bï¿½ad alokacji pamieci!");
+        exit(-1); // bï¿½ï¿½d przy alokacji pamiï¿½ci zakoï¿½czy program
     } else {
         node->data = data;
         node->next = NULL;
@@ -40,17 +42,17 @@ void push_back(DoublyLinkedList *list, Contact data) {
 }
 
 void pop_back(DoublyLinkedList *list) {
-    // Zabezpieczenie przed pust¹ list¹
+    //  to jest zabezpieczenie przed pustÄ… lista
     if (list->tail == NULL) {
-        return;
+        return; // jesli ma czego usuwaÄ‡, po prostu wychodzimy z funkcji
     }
 
     Node *temp = list->tail;
     list->tail = temp->prev;
 
-    // Sprawdzenie czy po przesuniêciu ogona lista sta³a siê pusta
+    //  sprawdzenie czy po przesuniÄ™ciu ogona lista staÅ‚a siÄ™ pusta
     if (list->tail == NULL) {
-        list->head = NULL;
+        list->head = NULL; // skoro nie ma ogona, nie moÅ¼e byÄ‡ teÅ¼ gÅ‚owy
     } else {
         list->tail->next = NULL;
     }
@@ -61,14 +63,14 @@ void pop_back(DoublyLinkedList *list) {
 void remove_node(DoublyLinkedList *list, Node *node) {
     if (list == NULL || node == NULL) return;
 
-    // Przepinanie wskaŸnika 'next' u poprzednika
+    // Przepinanie wskaï¿½nika 'next' u poprzednika
     if (node->prev != NULL) {
         node->prev->next = node->next;
     } else {
         list->head = node->next;
     }
 
-    // Przepinanie wskaŸnika 'prev' u nastêpnika
+    // Przepinanie wskaï¿½nika 'prev' u nastï¿½pnika
     if (node->next != NULL) {
         node->next->prev = node->prev;
     } else {
@@ -106,4 +108,81 @@ void print(DoublyLinkedList *list, void (*print_func)(Contact)) {
         print_func(current->data);
         current = current->next;
     }
+}
+
+// funkcje z 2
+
+void delete_contact_by_id(DoublyLinkedList* list, int target_id) {
+    Node* current = list->head;
+
+    while (current != NULL) {
+        if (current->data.ID == target_id) {
+            // wywolujemy uniwersalnÄ… funkcjÄ™ usuwajÄ…cÄ…
+            remove_node(list, current);
+            printf("Kontakt o ID %d zostaÅ‚ usuniÄ™ty.\n", target_id);
+            return;
+        }
+        current = current->next;
+    }
+    printf("Nie znaleziono kontaktu o ID %d.\n", target_id);
+}
+
+bool edit_contact_by_id(DoublyLinkedList* list, int target_id, Contact new_data) {
+    Node* current = list->head;
+    while(current != NULL) {
+        if (current->data.ID == target_id) {
+            int old_id = current->data.ID;
+            current->data = new_data;
+            current->data.ID = old_id;
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+Node* search_contact_by_surname(DoublyLinkedList* list, const char* surname) {
+    Node* current = list->head;
+    while(current != NULL) {
+        if (strcmp(current->data.surname, surname) == 0) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
+
+int cmp_by_surname(Contact a, Contact b) {
+    return strcmp(a.surname, b.surname);
+}
+
+int cmp_by_name(Contact a, Contact b) {
+    return strcmp(a.name, b.name);
+}
+
+void sort_list(DoublyLinkedList* list, CompareFunc cmp_func, bool ascending) {
+    if (list == NULL || list->size < 2) return;
+
+    bool swapped;
+    Node* current;
+    Node* last_ptr = NULL;
+
+    do {
+        swapped = false;
+        current = list->head;
+
+        while (current->next != last_ptr) {
+            int res = cmp_func(current->data, current->next->data);
+            bool should_swap = ascending ? (res > 0) : (res < 0);
+
+            if (should_swap) {
+                Contact temp = current->data;
+                current->data = current->next->data;
+                current->next->data = temp;
+                swapped = true;
+            }
+            current = current->next;
+        }
+        last_ptr = current;
+    } while (swapped);
 }
