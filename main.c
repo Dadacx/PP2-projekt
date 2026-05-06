@@ -15,20 +15,20 @@ int main(void) {
     DoublyLinkedList search_results = CreateList();
     
     if (!load_from_file(&list, "database.txt")) {
-        puts("Bï¿½ï¿½d podczas pobierania danych z pliku!");
+        puts("B³¹d podczas pobierania danych z pliku!");
         return 1;
     }
 
     while (choose != 0) {
         menu();
-        printf("Wybï¿½r: ");
+        printf("Wybór: ");
 
-        // Sprawdzamy czy scanf poprawnie zczyta? cyfr?
+        // Sprawdzamy czy scanf poprawnie zczyta³ cyfre
         if (scanf("%d", &choose) != 1) {
             choose = -1;
         }
 
-        // Czyszczenie bufora (jeï¿½li ktoï¿½ wpisze tekst lub po wciï¿½niï¿½ciu Entera dla cyfry)
+        // Czyszczenie bufora (jeœli ktoœ wpisze tekst lub po wciœniêciu Entera dla cyfry)
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
 

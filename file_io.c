@@ -6,7 +6,7 @@
 bool save_to_file(DoublyLinkedList *list, char file_name[]) {
     FILE *file = fopen(file_name, "w");
     if (file == NULL) {
-        // printf("BÅ‚Ä…d podczas otwierania pliku '%s'",file_name);
+        // printf("B³¹d podczas otwierania pliku '%s'",file_name);
         return false;
     }
     Node *current = list->head;

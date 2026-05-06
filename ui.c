@@ -13,19 +13,25 @@ void menu() {
     puts("1. Wyœwietl liste kontaktów");
     puts("2. Dodaj nowy kontakt");
 }
-void print_format(Contact c) {
+void print_format_old(Contact c) {
     printf("| %-10s %-10s | %15s %3s, %6s %-10s | %-15s| ID: %d \n",c.name,c.surname,c.address.street,c.address.number,c.address.postal_code,c.address.city,c.phone,c.ID);
+}
+void print_format(Contact c) {
+    printf("%s %s\n%s %s, %s %s\nNumer telefonu: %s | ID: %d\n\n",c.name,c.surname,c.address.street,c.address.number,c.address.postal_code,c.address.city,c.phone,c.ID);
 }
 void print_book(DoublyLinkedList *list) {
     if (list->head == NULL) {
         puts("Brak kontaktów do wyœwietlenia");
         return;
     }
-    puts("+---------------------------------------------------------------------------------+");
-    puts("|    Imie i nazwisko    |                  Adres                 | Numer telefonu |");
-    puts("+---------------------------------------------------------------------------------+");
+    // puts("+---------------------------------------------------------------------------------+");
+    // puts("|    Imie i nazwisko    |                  Adres                 | Numer telefonu |");
+    // puts("+---------------------------------------------------------------------------------+");
+    puts("+-----------------------------------------------------------------+");
+    puts("|                         Lista kontaktów                         |");
+    puts("+-----------------------------------------------------------------+");
     print(list,print_format);
-    puts("+---------------------------------------------------------------------------------+");
+    // puts("+---------------------------------------------------------------------------------+");
 }
 
 void get_text(char* bufor, int length) {
