@@ -11,17 +11,18 @@ int main(void) {
 
     int choose = -1;
     DoublyLinkedList list = CreateList();
+    DoublyLinkedList search_results = CreateList();
 
     while (choose != 0) {
         menu();
-        printf("Wybï¿½r: ");
+        printf("Wybór: ");
 
-        // Sprawdzamy czy scanf poprawnie zczytaï¿½ cyfrï¿½
+        // Sprawdzamy czy scanf poprawnie zczyta? cyfr?
         if (scanf("%d", &choose) != 1) {
             choose = -1;
         }
 
-        // Czyszczenie bufora (jeï¿½li ktoï¿½ wpisze tekst lub po wciï¿½niï¿½ciu Entera dla cyfry)
+        // Czyszczenie bufora (jeœli ktoœ wpisze tekst lub po wciœniêciu Entera dla cyfry)
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
 
@@ -41,6 +42,29 @@ int main(void) {
             }
         }
     }
+
+    puts("\nWyszukiwanie 'Nowak':");
+    clear(&search_results);
+
+    search_contacts_by_surname(&list, &search_results, "Nowak");
+
+    if (search_results.head == NULL) {
+        printf("Nie znaleziono zadnych kontaktow o nazwisku: %s\n", "Nowak");
+    } else {
+        printf("\n--- ZNALEZIONE KONTAKTY ---\n");
+        print_book(&search_results);
+    }
+
+
+    puts("\nSortowanie rosnaco po nazwisku:");
+    sort_list(&list, cmp_by_surname, true);
+    print_book(&list);
+
+    // puts("\nEdycja kontaktu ID 1:");
+    // Contact c_edit = c1;
+    // sprintf(c_edit.surname, "Adamczyk");
+    // edit_contact_by_id(&list, 1, c_edit);
+    // print_book(&list);
 
     clear(&list);
     return 0;

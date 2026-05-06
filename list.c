@@ -17,8 +17,8 @@ DoublyLinkedList CreateList() {
 Node *CreateNode(Contact data) {
     Node *node = (Node *) malloc(sizeof(Node));
     if (node == NULL) {
-        printf("Bï¿½ad alokacji pamieci!");
-        exit(-1); // bï¿½ï¿½d przy alokacji pamiï¿½ci zakoï¿½czy program
+        printf("B³¹d alokacji pamieci!");
+        exit(-1); // b³¹d przy alokacji pamiêci zakoñczy program
     } else {
         node->data = data;
         node->next = NULL;
@@ -42,17 +42,17 @@ void push_back(DoublyLinkedList *list, Contact data) {
 }
 
 void pop_back(DoublyLinkedList *list) {
-    //  to jest zabezpieczenie przed pustÄ… lista
+    //  to jest zabezpieczenie przed pust¹ lista
     if (list->tail == NULL) {
-        return; // jesli ma czego usuwaÄ‡, po prostu wychodzimy z funkcji
+        return; // jesli ma czego usuwaæ, po prostu wychodzimy z funkcji
     }
 
     Node *temp = list->tail;
     list->tail = temp->prev;
 
-    //  sprawdzenie czy po przesuniÄ™ciu ogona lista staÅ‚a siÄ™ pusta
+    //  sprawdzenie czy po przesuniêciu ogona lista sta³a siê pusta
     if (list->tail == NULL) {
-        list->head = NULL; // skoro nie ma ogona, nie moÅ¼e byÄ‡ teÅ¼ gÅ‚owy
+        list->head = NULL; // skoro nie ma ogona, nie mo¿e byæ te¿ g³owy
     } else {
         list->tail->next = NULL;
     }
@@ -63,14 +63,14 @@ void pop_back(DoublyLinkedList *list) {
 void remove_node(DoublyLinkedList *list, Node *node) {
     if (list == NULL || node == NULL) return;
 
-    // Przepinanie wskaï¿½nika 'next' u poprzednika
+    // Przepinanie wskaŸnika 'next' u poprzednika
     if (node->prev != NULL) {
         node->prev->next = node->next;
     } else {
         list->head = node->next;
     }
 
-    // Przepinanie wskaï¿½nika 'prev' u nastï¿½pnika
+    // Przepinanie wskaŸnika 'prev' u nastêpnika
     if (node->next != NULL) {
         node->next->prev = node->prev;
     } else {
@@ -117,9 +117,9 @@ void delete_contact_by_id(DoublyLinkedList* list, int target_id) {
 
     while (current != NULL) {
         if (current->data.ID == target_id) {
-            // wywolujemy uniwersalnÄ… funkcjÄ™ usuwajÄ…cÄ…
+            // wywolujemy uniwersaln¹ funkcjê usuwaj¹c¹
             remove_node(list, current);
-            printf("Kontakt o ID %d zostaÅ‚ usuniÄ™ty.\n", target_id);
+            printf("Kontakt o ID %d zosta³ usuniêty.\n", target_id);
             return;
         }
         current = current->next;
@@ -141,15 +141,15 @@ bool edit_contact_by_id(DoublyLinkedList* list, int target_id, Contact new_data)
     return false;
 }
 
-Node* search_contact_by_surname(DoublyLinkedList* list, const char* surname) {
-    Node* current = list->head;
+void search_contacts_by_surname(DoublyLinkedList* source_list, DoublyLinkedList* results_list, const char* surname) {
+    Node* current = source_list->head;
+
     while(current != NULL) {
         if (strcmp(current->data.surname, surname) == 0) {
-            return current;
+            push_back(results_list, current->data);
         }
         current = current->next;
     }
-    return NULL;
 }
 
 int cmp_by_surname(Contact a, Contact b) {

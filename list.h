@@ -17,7 +17,7 @@ void print(DoublyLinkedList *list, void (*print_func)(Contact));
 // tu masz te nowe
 void delete_contact_by_id(DoublyLinkedList* list, int target_id);
 bool edit_contact_by_id(DoublyLinkedList* list, int target_id, Contact new_data);
-Node* search_contact_by_surname(DoublyLinkedList* list, const char* surname);
+void search_contacts_by_surname(DoublyLinkedList* source_list, DoublyLinkedList* results_list, const char* surname);
 void sort_list(DoublyLinkedList* list, CompareFunc cmp_func, bool ascending);
 
 int cmp_by_surname(Contact a, Contact b);
