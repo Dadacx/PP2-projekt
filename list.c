@@ -141,15 +141,42 @@ bool edit_contact_by_id(DoublyLinkedList* list, int target_id, Contact new_data)
     return false;
 }
 
-void search_contacts_by_surname(DoublyLinkedList* source_list, DoublyLinkedList* results_list, const char* surname) {
+void search_contacts(DoublyLinkedList* source_list, DoublyLinkedList* results_list, char* (*s_cmp)(Node *current), const char* value) {
     Node* current = source_list->head;
 
     while(current != NULL) {
-        if (strcmp(current->data.surname, surname) == 0) {
+        // printf("%s\n%s",current->data.name, s_cmp(current));
+        if (strcmp(s_cmp(current), value) == 0) {
             push_back(results_list, current->data);
         }
         current = current->next;
     }
+}
+
+char* s_cmp_name(Node *current) {
+    return current->data.name;
+}
+char* s_cmp_surname(Node *current) {
+    return current->data.surname;
+}
+char* s_cmp_phone(Node *current) {
+    return current->data.phone;
+}
+
+char* s_cmp_street(Node *current) {
+    return current->data.address.street;
+}
+
+char* s_cmp_number(Node *current) {
+    return current->data.address.number;
+}
+
+char* s_cmp_postal_code(Node *current) {
+    return current->data.address.postal_code;
+}
+
+char* s_cmp_city(Node *current) {
+    return current->data.address.city;
 }
 
 int cmp_by_surname(Contact a, Contact b) {

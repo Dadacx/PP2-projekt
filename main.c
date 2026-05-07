@@ -12,8 +12,7 @@ int main(void) {
 
     int choose = -1;
     DoublyLinkedList list = CreateList();
-    DoublyLinkedList search_results = CreateList();
-    
+
     if (!load_from_file(&list, "database.txt")) {
         puts("B³¹d podczas pobierania danych z pliku!");
         return 1;
@@ -35,7 +34,7 @@ int main(void) {
         switch (choose) {
             case 0: break;
             case 1: {
-                print_book(&list);
+                print_book(&list,"|                         Lista kontaktów                         |");
                 break;
             }
             case 2: {
@@ -43,10 +42,21 @@ int main(void) {
                 break;
             }
             case 3: {
+                delete_contact(&list);
+                break;
+            }
+            case 4: {
+                edit_contact(&list);
+                break;
+            }
+            case 5: {
+                search(&list);
+                break;
+            }
+            case 31: {
                 save_to_file(&list, "database.txt");
                 break;
             }
-
             default: {
                 puts("Nieprawidlowy wybor!");
                 break;
@@ -54,22 +64,10 @@ int main(void) {
         }
     }
 
-    puts("\nWyszukiwanie 'Nowak':");
-    clear(&search_results);
-
-    search_contacts_by_surname(&list, &search_results, "Nowak");
-
-    if (search_results.head == NULL) {
-        printf("Nie znaleziono zadnych kontaktow o nazwisku: %s\n", "Nowak");
-    } else {
-        printf("\n--- ZNALEZIONE KONTAKTY ---\n");
-        print_book(&search_results);
-    }
-
 
     puts("\nSortowanie rosnaco po nazwisku:");
     sort_list(&list, cmp_by_surname, true);
-    print_book(&list);
+    print_book(&list,"|                         Lista kontaktów                         |");
 
     // puts("\nEdycja kontaktu ID 1:");
     // Contact c_edit = c1;
