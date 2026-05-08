@@ -42,9 +42,9 @@ void push_back(DoublyLinkedList *list, Contact data) {
 }
 
 void pop_back(DoublyLinkedList *list) {
-    //  to jest zabezpieczenie przed pust¹ lista
+    //  zabezpieczenie przed pust¹ lista
     if (list->tail == NULL) {
-        return; // jesli ma czego usuwaæ, po prostu wychodzimy z funkcji
+        return;
     }
 
     Node *temp = list->tail;
@@ -119,12 +119,12 @@ void delete_contact_by_id(DoublyLinkedList* list, int target_id) {
         if (current->data.ID == target_id) {
             // wywolujemy uniwersaln¹ funkcjê usuwaj¹c¹
             remove_node(list, current);
-            printf("Kontakt o ID %d zosta³ usuniêty.\n", target_id);
+            printf("\nKontakt o ID %d zosta³ usuniêty.\n", target_id);
             return;
         }
         current = current->next;
     }
-    printf("Nie znaleziono kontaktu o ID %d.\n", target_id);
+    printf("\nNie znaleziono kontaktu o ID %d.\n", target_id);
 }
 
 bool edit_contact_by_id(DoublyLinkedList* list, int target_id, Contact new_data) {
@@ -145,7 +145,6 @@ void search_contacts(DoublyLinkedList* source_list, DoublyLinkedList* results_li
     Node* current = source_list->head;
 
     while(current != NULL) {
-        // printf("%s\n%s",current->data.name, s_cmp(current));
         if (strcmp(s_cmp(current), value) == 0) {
             push_back(results_list, current->data);
         }
@@ -153,6 +152,11 @@ void search_contacts(DoublyLinkedList* source_list, DoublyLinkedList* results_li
     }
 }
 
+char* s_cmp_id(Node *current) {
+    static char buffer[20];
+    sprintf(buffer, "%d", current->data.ID);
+    return buffer;
+}
 char* s_cmp_name(Node *current) {
     return current->data.name;
 }
@@ -179,12 +183,36 @@ char* s_cmp_city(Node *current) {
     return current->data.address.city;
 }
 
-int cmp_by_surname(Contact a, Contact b) {
-    return strcmp(a.surname, b.surname);
+int cmp_by_id(Contact a, Contact b) {
+    return a.ID - b.ID;
 }
 
 int cmp_by_name(Contact a, Contact b) {
     return strcmp(a.name, b.name);
+}
+
+int cmp_by_surname(Contact a, Contact b) {
+    return strcmp(a.surname, b.surname);
+}
+
+int cmp_by_phone(Contact a, Contact b) {
+    return strcmp(a.phone, b.phone);
+}
+
+int cmp_by_city(Contact a, Contact b) {
+    return strcmp(a.address.city, b.address.city);
+}
+
+int cmp_by_street(Contact a, Contact b) {
+    return strcmp(a.address.street, b.address.street);
+}
+
+int cmp_by_number(Contact a, Contact b) {
+    return strcmp(a.address.number, b.address.number);
+}
+
+int cmp_by_postal_code(Contact a, Contact b) {
+    return strcmp(a.address.postal_code, b.address.postal_code);
 }
 
 void sort_list(DoublyLinkedList* list, CompareFunc cmp_func, bool ascending) {

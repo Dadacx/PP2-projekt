@@ -9,6 +9,63 @@
 
 #include "file_io.h"
 
+void init_menu(DoublyLinkedList *list, char db_name[]) {
+    int choose = -1;
+    while (choose != 0) {
+        menu();
+        printf("Wybór: ");
+
+        // czy scanf poprawnie zczyta³ cyfre
+        if (scanf("%d", &choose) != 1) {
+            choose = -1;
+        }
+
+        // Czyszczenie bufora (jeœli ktoœ wpisze tekst)
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+
+        switch (choose) {
+            case 0: break;
+            case 1: {
+                print_book(list, "|                         Lista kontaktów                         |");
+                break;
+            }
+            case 2: {
+                add_contact(list);
+                break;
+            }
+            case 3: {
+                delete_contact(list);
+                break;
+            }
+            case 4: {
+                edit_contact(list);
+                break;
+            }
+            case 5: {
+                search(list);
+                break;
+            }
+            case 6: {
+                sort(list);
+                break;
+            }
+            case 7: {
+                if (save_to_file(list, db_name)) {
+                    puts("\nKontakty zosta³y pomyœlnie zapisane do pliku");
+                } else {
+                    puts("\nNie uda³o sie zapisac kontaktów do pliku!");
+                }
+                break;
+            }
+            default: {
+                puts("Nieprawidlowy wybor!");
+                break;
+            }
+        }
+    }
+}
+
 void menu() {
     puts("");
     puts("=-= Menu Ksiazki Telefonicznej =-=");
@@ -18,24 +75,29 @@ void menu() {
     puts("3. Usuñ kontakt");
     puts("4. Edytuj kontakt");
     puts("5. Wyszukaj kontakty");
+    puts("6. Sortuj kontakty");
+    puts("7. Zapisz");
+    puts("");
 }
 
 void categoty_menu() {
     puts("");
-    puts("=-= Wybierz po czym chcesz wyszukaæ =-=");
-    puts("1. Imie");
-    puts("2. Nazwisko");
-    puts("3. Numer telefonu");
-    puts("4. Miasto");
-    puts("5. Ulica");
-    puts("6. Numer domu");
-    puts("7. kod pocztowy");
+    puts("=-= Wybierz kategorie =-=");
+    puts("1. ID");
+    puts("2. Imie");
+    puts("3. Nazwisko");
+    puts("4. Numer telefonu");
+    puts("5. Miasto");
+    puts("6. Ulica");
+    puts("7. Numer domu");
+    puts("8. kod pocztowy");
+    puts("");
 }
 
-void print_format_old(Contact c) {
-    printf("| %-10s %-10s | %15s %3s, %6s %-10s | %-15s| ID: %d \n", c.name, c.surname, c.address.street,
-           c.address.number, c.address.postal_code, c.address.city, c.phone, c.ID);
-}
+// void print_format(Contact c) {
+//     printf("| %-10s %-10s | %15s %3s, %6s %-10s | %-15s| ID: %d \n", c.name, c.surname, c.address.street,
+//            c.address.number, c.address.postal_code, c.address.city, c.phone, c.ID);
+// }
 
 void print_format(Contact c) {
     printf("%s %s\n%s %s, %s %s\nNumer telefonu: %s | ID: %d\n\n", c.name, c.surname, c.address.street,
@@ -44,7 +106,7 @@ void print_format(Contact c) {
 
 void print_book(DoublyLinkedList *list, char title[67]) {
     if (list->head == NULL) {
-        puts("Brak kontaktów do wyœwietlenia");
+        puts("\nBrak kontaktów do wyœwietlenia");
         return;
     }
     // puts("+---------------------------------------------------------------------------------+");
@@ -52,7 +114,7 @@ void print_book(DoublyLinkedList *list, char title[67]) {
     // puts("+---------------------------------------------------------------------------------+");
     puts("+-----------------------------------------------------------------+");
     // puts("|                         Lista kontaktów                         |");
-    printf("%s\n",title);
+    printf("%s\n", title);
     puts("+-----------------------------------------------------------------+");
     print(list, print_format);
     // puts("+---------------------------------------------------------------------------------+");
@@ -122,7 +184,7 @@ void add_contact(DoublyLinkedList *list) {
     }
 
     push_back(list, c);
-    puts("Nowy kontakt zosta³ dodany");
+    puts("\nNowy kontakt zosta³ dodany");
 }
 
 void delete_contact(DoublyLinkedList *list) {
@@ -162,23 +224,23 @@ void edit_contact(DoublyLinkedList *list) {
 
         puts("\nWcisnij sam Enter, aby zostawic wartoœæ bez zmian");
 
-        printf("Podaj imie [%s]:",tmp_contact.name);
+        printf("Podaj imie [%s]:", tmp_contact.name);
         get_text(bufor, sizeof(tmp_contact.name));
         if (strlen(bufor) > 0) strcpy(tmp_contact.name, bufor);
 
-        printf("Podaj nazwisko [%s]:",tmp_contact.surname);
+        printf("Podaj nazwisko [%s]:", tmp_contact.surname);
         get_text(bufor, sizeof(tmp_contact.surname));
         if (strlen(bufor) > 0) strcpy(tmp_contact.surname, bufor);
 
-        printf("Podaj miasto [%s]:",tmp_contact.address.city);
+        printf("Podaj miasto [%s]:", tmp_contact.address.city);
         get_text(bufor, sizeof(tmp_contact.address.city));
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.city, bufor);
 
-        printf("Podaj ulice [%s]:",tmp_contact.address.street);
+        printf("Podaj ulice [%s]:", tmp_contact.address.street);
         get_text(bufor, sizeof(tmp_contact.address.street));
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.street, bufor);
 
-        printf("Podaj numer domu/mieszkania [%s]:",tmp_contact.address.number);
+        printf("Podaj numer domu/mieszkania [%s]:", tmp_contact.address.number);
         get_text(bufor, sizeof(tmp_contact.address.number));
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.number, bufor);
 
@@ -190,7 +252,7 @@ void edit_contact(DoublyLinkedList *list) {
         }
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.postal_code, bufor);
 
-        printf("Podaj numer telefonu [%s]:",tmp_contact.phone);
+        printf("Podaj numer telefonu [%s]:", tmp_contact.phone);
         get_text(bufor, sizeof(tmp_contact.phone));
         while (!is_valid_number(bufor) && strlen(bufor) > 0) {
             puts("Podany numer telefonu jest nieprawid³owy! Podaj jeszcze raz 9-cio cyfrowy numer telefonu");
@@ -198,26 +260,24 @@ void edit_contact(DoublyLinkedList *list) {
         }
         if (strlen(bufor) > 0) strcpy(tmp_contact.phone, bufor);
 
-        if (edit_contact_by_id(list,id,tmp_contact)) {
-            printf("Kontakt o ID %d zosta³ zaktualizowany\n",id);
+        if (edit_contact_by_id(list, id, tmp_contact)) {
+            printf("\nKontakt o ID %d zosta³ zaktualizowany\n", id);
         } else {
-            printf("Nie uda³o siê zaktualizowaæ kontaktu o ID %d\n",id);
+            printf("N\nie uda³o siê zaktualizowaæ kontaktu o ID %d\n", id);
         }
     } else {
-        printf("Nie znaleziono kontaktu o ID %d\n", id);
+        printf("\nNie znaleziono kontaktu o ID %d\n", id);
     }
 }
 
 void search(DoublyLinkedList *list) {
     char bufor[100];
+    char * (*s_cmp_func)(Node *) = NULL;
     int choose = 0;
     DoublyLinkedList search_results = CreateList();
 
-    puts("Podaj wysukiwan¹ frazê: ");
-    get_text(bufor, sizeof(bufor));
-
     categoty_menu();
-    while (choose < 1 || choose > 7) {
+    while (choose < 1 || choose > 8) {
         printf("Wybór: ");
 
         if (scanf("%d", &choose) != 1) {
@@ -229,31 +289,35 @@ void search(DoublyLinkedList *list) {
 
         switch (choose) {
             case 1: {
-                search_contacts(list,&search_results,s_cmp_name,bufor);
+                s_cmp_func = s_cmp_id;
                 break;
             }
             case 2: {
-                search_contacts(list,&search_results,s_cmp_surname,bufor);
+                s_cmp_func = s_cmp_name;
                 break;
             }
             case 3: {
-                search_contacts(list,&search_results,s_cmp_phone,bufor);
+                s_cmp_func = s_cmp_surname;
                 break;
             }
             case 4: {
-                search_contacts(list,&search_results,s_cmp_city,bufor);
+                s_cmp_func = s_cmp_phone;
                 break;
             }
             case 5: {
-                search_contacts(list,&search_results,s_cmp_street,bufor);
+                s_cmp_func = s_cmp_city;
                 break;
             }
             case 6: {
-                search_contacts(list,&search_results,s_cmp_number,bufor);
+                s_cmp_func = s_cmp_street;
                 break;
             }
             case 7: {
-                search_contacts(list,&search_results,s_cmp_postal_code,bufor);
+                s_cmp_func = s_cmp_number;
+                break;
+            }
+            case 8: {
+                s_cmp_func = s_cmp_postal_code;
                 break;
             }
             default: {
@@ -262,10 +326,98 @@ void search(DoublyLinkedList *list) {
             }
         }
     }
+
+    puts("Podaj wysukiwan¹ frazê: ");
+    get_text(bufor, sizeof(bufor));
+
+    search_contacts(list, &search_results, s_cmp_func, bufor);
+
     if (search_results.head == NULL) {
         printf("Nie znaleziono zadnych kontaktow o podanych kryteriach: %d, %s\n", choose, bufor);
     } else {
-        print_book(&search_results,"|                       ZNALEZIONE KONTAKTY                       |");
+        print_book(&search_results, "|                       ZNALEZIONE KONTAKTY                       |");
         clear(&search_results);
     }
+}
+
+void sort(DoublyLinkedList *list) {
+    int choose = 0;
+    int asc = 0;
+    int (*cmp_func)(Contact, Contact) = NULL;
+
+    categoty_menu();
+    while (choose < 1 || choose > 8) {
+        printf("Wybór: ");
+
+        if (scanf("%d", &choose) != 1) {
+            choose = -1;
+        }
+
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+
+        switch (choose) {
+            case 1: {
+                cmp_func = cmp_by_id;
+                break;
+            }
+            case 2: {
+                cmp_func = cmp_by_name;
+                break;
+            }
+            case 3: {
+                cmp_func = cmp_by_surname;
+                break;
+            }
+            case 4: {
+                cmp_func = cmp_by_phone;
+                break;
+            }
+            case 5: {
+                cmp_func = cmp_by_city;
+                break;
+            }
+            case 6: {
+                cmp_func = cmp_by_street;
+                break;
+            }
+            case 7: {
+                cmp_func = cmp_by_number;
+                break;
+            }
+            case 8: {
+                cmp_func = cmp_by_postal_code;
+                break;
+            }
+            default: {
+                puts("Nieprawidlowy wybor!");
+                break;
+            }
+        }
+    }
+    puts("\n=-= Wybierz porz¹dek sortowania =-=\n1. Rosn¹co\n2. Malej¹co\n");
+
+    while (asc < 1 || asc > 2) {
+        printf("Wybór: ");
+
+        if (scanf("%d", &asc) != 1) {
+            asc = 0;
+        }
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+        switch (asc) {
+            case 1: {
+                sort_list(list, cmp_func,true);
+                break;
+            }
+            case 2: {
+                sort_list(list, cmp_func,false);
+                break;
+            }
+            default: {
+                puts("Nieprawidlowy wybor!");
+            }
+        }
+    }
+    puts("\nLista kontaktów zosta³a posortowana.");
 }
