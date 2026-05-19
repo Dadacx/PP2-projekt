@@ -17,6 +17,7 @@ void print(DoublyLinkedList *list, void (*print_func)(Contact));
 void delete_contact_by_id(DoublyLinkedList* list, int target_id);
 bool edit_contact_by_id(DoublyLinkedList* list, int target_id, Contact new_data);
 void search_contacts(DoublyLinkedList* source_list, DoublyLinkedList* results_list, char* (*s_cmp)(Node *current), const char* value);
+void search_contacts_by_group(DoublyLinkedList* source_list, DoublyLinkedList* results_list, const char* value);
 void sort_list(DoublyLinkedList* list, CompareFunc cmp_func, bool ascending);
 
 char* s_cmp_id(Node *current);

@@ -145,8 +145,22 @@ void search_contacts(DoublyLinkedList* source_list, DoublyLinkedList* results_li
     Node* current = source_list->head;
 
     while(current != NULL) {
-        if (strcmp(s_cmp(current), value) == 0) {
+        if (stricmp(s_cmp(current), value) == 0) {
             push_back(results_list, current->data);
+        }
+        current = current->next;
+    }
+}
+
+void search_contacts_by_group(DoublyLinkedList* source_list, DoublyLinkedList* results_list, const char* value) {
+    Node* current = source_list->head;
+
+    while(current != NULL) {
+        for (int i = 0; i < 10; i++) {
+            if (strlen(current->data.groups[i]) > 0 && stricmp(current->data.groups[i], value) == 0) {
+                push_back(results_list, current->data);
+                break;
+            }
         }
         current = current->next;
     }
@@ -188,31 +202,31 @@ int cmp_by_id(Contact a, Contact b) {
 }
 
 int cmp_by_name(Contact a, Contact b) {
-    return strcmp(a.name, b.name);
+    return stricmp(a.name, b.name);
 }
 
 int cmp_by_surname(Contact a, Contact b) {
-    return strcmp(a.surname, b.surname);
+    return stricmp(a.surname, b.surname);
 }
 
 int cmp_by_phone(Contact a, Contact b) {
-    return strcmp(a.phone, b.phone);
+    return stricmp(a.phone, b.phone);
 }
 
 int cmp_by_city(Contact a, Contact b) {
-    return strcmp(a.address.city, b.address.city);
+    return stricmp(a.address.city, b.address.city);
 }
 
 int cmp_by_street(Contact a, Contact b) {
-    return strcmp(a.address.street, b.address.street);
+    return stricmp(a.address.street, b.address.street);
 }
 
 int cmp_by_number(Contact a, Contact b) {
-    return strcmp(a.address.number, b.address.number);
+    return stricmp(a.address.number, b.address.number);
 }
 
 int cmp_by_postal_code(Contact a, Contact b) {
-    return strcmp(a.address.postal_code, b.address.postal_code);
+    return stricmp(a.address.postal_code, b.address.postal_code);
 }
 
 void sort_list(DoublyLinkedList* list, CompareFunc cmp_func, bool ascending) {

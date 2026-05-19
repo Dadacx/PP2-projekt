@@ -90,18 +90,26 @@ void categoty_menu() {
     puts("5. Miasto");
     puts("6. Ulica");
     puts("7. Numer domu");
-    puts("8. kod pocztowy");
+    puts("8. Kod pocztowy");
+    puts("9. Grupa");
     puts("");
 }
 
-// void print_format(Contact c) {
-//     printf("| %-10s %-10s | %15s %3s, %6s %-10s | %-15s| ID: %d \n", c.name, c.surname, c.address.street,
-//            c.address.number, c.address.postal_code, c.address.city, c.phone, c.ID);
-// }
+void print_groups(Contact *c) {
+    for (int i = 0; i < 10; i++) {
+        if (c->groups[i][0] == 0) {
+            if (i == 0) printf("brak");
+            break;
+        }
+        printf("%s, ", c->groups[i]);
+    }
+}
 
 void print_format(Contact c) {
-    printf("%s %s\n%s %s, %s %s\nNumer telefonu: %s | ID: %d\n\n", c.name, c.surname, c.address.street,
+    printf("%s %s\n%s %s, %s %s\nNumer telefonu: %s | ID: %d\nGrupy: ", c.name, c.surname, c.address.street,
            c.address.number, c.address.postal_code, c.address.city, c.phone, c.ID);
+    print_groups(&c);
+    puts("\n");
 }
 
 void print_book(DoublyLinkedList *list, char title[67]) {
@@ -109,15 +117,11 @@ void print_book(DoublyLinkedList *list, char title[67]) {
         puts("\nBrak kontaktów do wyœwietlenia");
         return;
     }
-    // puts("+---------------------------------------------------------------------------------+");
-    // puts("|    Imie i nazwisko    |                  Adres                 | Numer telefonu |");
-    // puts("+---------------------------------------------------------------------------------+");
+
     puts("+-----------------------------------------------------------------+");
-    // puts("|                         Lista kontaktów                         |");
     printf("%s\n", title);
     puts("+-----------------------------------------------------------------+");
     print(list, print_format);
-    // puts("+---------------------------------------------------------------------------------+");
 }
 
 void get_text(char *bufor, int length) {
@@ -155,33 +159,97 @@ bool is_valid_number(char *number) {
     return true;
 }
 
+char* trim(char* str) {
+    if (str == NULL) return "";
+
+    int len = strlen(str);
+    while (len > 0 && isspace((unsigned char)str[len - 1])) {
+        str[len - 1] = '\0';
+        len--;
+    }
+
+    int start = 0;
+    while (str[start] != '\0' && isspace((unsigned char)str[start])) {
+        start++;
+    }
+
+    if (start > 0) {
+        memmove(str, str + start, len - start + 1);
+    }
+
+    return str;
+}
+
+bool separate_groups(char *bufor, Contact *c) {
+    memset(c->groups, 0, sizeof(c->groups));
+    char* token;
+    token = strtok(bufor, ",");
+    for (int i = 0; i < 10; i++) {
+        if (token != NULL) {
+            strcpy(c->groups[i], trim(token));
+            token = strtok(NULL, ",");
+        }
+    }
+    token = strtok(NULL, ",");
+    if (token != NULL) return false;
+    return true;
+}
+
 void add_contact(DoublyLinkedList *list) {
     Contact c;
+    char bufor[255];
+    bool is_groups_valid;
 
     c.ID = (list->head == NULL) ? 1 : list->tail->data.ID + 1;
 
-    puts("Podaj imie:");
-    get_text(c.name, sizeof(c.name));
-    puts("Podaj nazwisko:");
-    get_text(c.surname, sizeof(c.surname));
-    puts("Podaj miasto:");
-    get_text(c.address.city, sizeof(c.address.city));
-    puts("Podaj ulice:");
-    get_text(c.address.street, sizeof(c.address.street));
-    puts("Podaj numer domu/mieszkania:");
-    get_text(c.address.number, sizeof(c.address.number));
-    puts("Podaj kod pocztowy:");
-    get_text(c.address.postal_code, sizeof(c.address.postal_code));
-    while (!is_valid_postal_code(c.address.postal_code)) {
-        puts("Podany kod pocztowy jest nieprawid³owy! Wpisz jeszcze raz w prawid³owym formacie (XX-XXX)");
+    do {
+        puts("Podaj imie:");
+        get_text(c.name, sizeof(c.name));
+        if (strlen(c.name) == 0) puts("To pole nie moze byc puste!");
+    } while (strlen(c.name) == 0);
+    do {
+        puts("Podaj nazwisko:");
+        get_text(c.surname, sizeof(c.surname));
+        if (strlen(c.surname) == 0) puts("To pole nie moze byc puste!");
+    } while (strlen(c.surname) == 0);
+    do {
+        puts("Podaj miasto:");
+        get_text(c.address.city, sizeof(c.address.city));
+        if (strlen(c.address.city) == 0) puts("To pole nie moze byc puste!");
+    } while (strlen(c.address.city) == 0);
+    do {
+        puts("Podaj ulice:");
+        get_text(c.address.street, sizeof(c.address.street));
+        if (strlen(c.address.street) == 0) puts("To pole nie moze byc puste!");
+    } while (strlen(c.address.street) == 0);
+    do {
+        puts("Podaj numer domu/mieszkania:");
+        get_text(c.address.number, sizeof(c.address.number));
+        if (strlen(c.address.number) == 0) puts("To pole nie moze byc puste!");
+    } while (strlen(c.address.number) == 0);
+    do {
+        puts("Podaj kod pocztowy:");
         get_text(c.address.postal_code, sizeof(c.address.postal_code));
-    }
-    puts("Podaj numer telefonu:");
-    get_text(c.phone, sizeof(c.phone));
-    while (!is_valid_number(c.phone)) {
-        puts("Podany numer telefonu jest nieprawid³owy! Podaj jeszcze raz 9-cio cyfrowy numer telefonu");
+        if (!is_valid_postal_code(c.address.postal_code)) {
+            puts("Podany kod pocztowy jest nieprawid³owy! Wpisz jeszcze raz w prawid³owym formacie (XX-XXX)");
+        }
+    } while (!is_valid_postal_code(c.address.postal_code));
+    do {
+        puts("Podaj numer telefonu:");
         get_text(c.phone, sizeof(c.phone));
-    }
+        if (!is_valid_number(c.phone)) {
+            puts("Podany numer telefonu jest nieprawid³owy! Podaj jeszcze raz 9-cio cyfrowy numer telefonu");
+        }
+    } while (!is_valid_number(c.phone));
+    do {
+        puts("Podaj grupy dla kontaktu (po przecinku, max 10):");
+        get_text(bufor, sizeof(bufor));
+        is_groups_valid = separate_groups(bufor, &c);
+
+        if (!is_groups_valid) {
+            puts("Maksymalna dozwolona liczba grup to 10! Podaj maksymalnie 10 grup.");
+        }
+    } while (!is_groups_valid);
 
     push_back(list, c);
     puts("\nNowy kontakt zosta³ dodany");
@@ -203,6 +271,7 @@ void delete_contact(DoublyLinkedList *list) {
 void edit_contact(DoublyLinkedList *list) {
     int id = 0;
     char bufor[55];
+    bool is_groups_valid;
 
     puts("Podaj ID kontaktu, który chcesz edytowaæ");
     while (true) {
@@ -224,41 +293,57 @@ void edit_contact(DoublyLinkedList *list) {
 
         puts("\nWcisnij sam Enter, aby zostawic wartoœæ bez zmian");
 
-        printf("Podaj imie [%s]:", tmp_contact.name);
+        printf("Podaj imie [%s]: ", tmp_contact.name);
         get_text(bufor, sizeof(tmp_contact.name));
         if (strlen(bufor) > 0) strcpy(tmp_contact.name, bufor);
 
-        printf("Podaj nazwisko [%s]:", tmp_contact.surname);
+        printf("Podaj nazwisko [%s]: ", tmp_contact.surname);
         get_text(bufor, sizeof(tmp_contact.surname));
         if (strlen(bufor) > 0) strcpy(tmp_contact.surname, bufor);
 
-        printf("Podaj miasto [%s]:", tmp_contact.address.city);
+        printf("Podaj miasto [%s]: ", tmp_contact.address.city);
         get_text(bufor, sizeof(tmp_contact.address.city));
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.city, bufor);
 
-        printf("Podaj ulice [%s]:", tmp_contact.address.street);
+        printf("Podaj ulice [%s]: ", tmp_contact.address.street);
         get_text(bufor, sizeof(tmp_contact.address.street));
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.street, bufor);
 
-        printf("Podaj numer domu/mieszkania [%s]:", tmp_contact.address.number);
+        printf("Podaj numer domu/mieszkania [%s]: ", tmp_contact.address.number);
         get_text(bufor, sizeof(tmp_contact.address.number));
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.number, bufor);
 
-        printf("Podaj kod pocztowy [%s]:", tmp_contact.address.postal_code);
-        get_text(bufor, sizeof(tmp_contact.address.postal_code));
-        while (!is_valid_postal_code(bufor) && strlen(bufor) > 0) {
-            puts("Podany kod pocztowy jest nieprawid³owy! Wpisz jeszcze raz w prawid³owym formacie (XX-XXX)");
-            get_text(bufor, sizeof(tmp_contact.address.postal_code));
-        }
+        do {
+            printf("Podaj kod pocztowy [%s]: ", tmp_contact.address.postal_code);
+            get_text(bufor, sizeof(bufor));
+
+            if (!is_valid_postal_code(bufor) && strlen(bufor) > 0) {
+                puts("Podany kod pocztowy jest nieprawid³owy! Wpisz jeszcze raz w prawid³owym formacie (XX-XXX)");
+            }
+        } while (!is_valid_postal_code(bufor) && strlen(bufor) > 0);
         if (strlen(bufor) > 0) strcpy(tmp_contact.address.postal_code, bufor);
 
-        printf("Podaj numer telefonu [%s]:", tmp_contact.phone);
-        get_text(bufor, sizeof(tmp_contact.phone));
-        while (!is_valid_number(bufor) && strlen(bufor) > 0) {
-            puts("Podany numer telefonu jest nieprawid³owy! Podaj jeszcze raz 9-cio cyfrowy numer telefonu");
-            get_text(bufor, sizeof(tmp_contact.phone));
-        }
+        do {
+            printf("Podaj numer telefonu [%s]: ", tmp_contact.phone);
+            get_text(bufor, sizeof(bufor));
+
+            if (!is_valid_number(bufor) && strlen(bufor) > 0) {
+                puts("Podany numer telefonu jest nieprawid³owy! Podaj jeszcze raz 9-cio cyfrowy numer telefonu");
+            }
+        } while (!is_valid_number(bufor) && strlen(bufor) > 0);
         if (strlen(bufor) > 0) strcpy(tmp_contact.phone, bufor);
+
+        do {
+            printf("Podaj grupy dla kontaktu (po przecinku, max 10) [");
+            print_groups(&tmp_contact);
+            printf("]: ");
+            get_text(bufor, sizeof(bufor));
+            is_groups_valid = separate_groups(bufor, &tmp_contact);
+
+            if (!is_groups_valid && strlen(bufor) > 0) {
+                puts("Maksymalna dozwolona liczba grup to 10! Podaj maksymalnie 10 grup.");
+            }
+        } while (!is_groups_valid && strlen(bufor) > 0);
 
         if (edit_contact_by_id(list, id, tmp_contact)) {
             printf("\nKontakt o ID %d zosta³ zaktualizowany\n", id);
@@ -277,7 +362,7 @@ void search(DoublyLinkedList *list) {
     DoublyLinkedList search_results = CreateList();
 
     categoty_menu();
-    while (choose < 1 || choose > 8) {
+    while (choose < 1 || choose > 9) {
         printf("Wybór: ");
 
         if (scanf("%d", &choose) != 1) {
@@ -320,6 +405,10 @@ void search(DoublyLinkedList *list) {
                 s_cmp_func = s_cmp_postal_code;
                 break;
             }
+            case 9: {
+                s_cmp_func = NULL;
+                break;
+            }
             default: {
                 puts("Nieprawidlowy wybor!");
                 break;
@@ -330,7 +419,11 @@ void search(DoublyLinkedList *list) {
     puts("Podaj wysukiwan¹ frazê: ");
     get_text(bufor, sizeof(bufor));
 
-    search_contacts(list, &search_results, s_cmp_func, bufor);
+    if (s_cmp_func != NULL) {
+        search_contacts(list, &search_results, s_cmp_func, bufor);
+    } else {
+        search_contacts_by_group(list,&search_results,bufor);
+    }
 
     if (search_results.head == NULL) {
         printf("Nie znaleziono zadnych kontaktow o podanych kryteriach: %d, %s\n", choose, bufor);
@@ -388,6 +481,10 @@ void sort(DoublyLinkedList *list) {
             case 8: {
                 cmp_func = cmp_by_postal_code;
                 break;
+            }
+            case 9: {
+                puts("Ta funkcja nie jest obs³ugiwana dla tej kategorii!");
+                return;
             }
             default: {
                 puts("Nieprawidlowy wybor!");

@@ -13,6 +13,7 @@ typedef struct {
     char surname[30];
     char name[20];
     char phone[10];
+    char groups[10][30];
     Address address;
 } Contact;
 

@@ -12,15 +12,23 @@ bool save_to_file(DoublyLinkedList *list, char file_name[]) {
     Node *current = list->head;
     while (current != NULL) {
         Contact *c = &(current->data);
-        fprintf(file,"%d;%s;%s;%s;%s;%s;%s;%s\n",
-            c->ID,
-            c->surname,
-            c->name,
-            c->phone,
-            c->address.street,
-            c->address.number,
-            c->address.city,
-            c->address.postal_code);
+        fprintf(file, "%d;%s;%s;%s;%s;%s;%s;%s;",
+                c->ID,
+                c->surname,
+                c->name,
+                c->phone,
+                c->address.street,
+                c->address.number,
+                c->address.city,
+                c->address.postal_code);
+
+        for (int i = 0; i < 10; i++) {
+            if (strlen(c->groups[i]) > 0) {
+                fprintf(file, "%s,", c->groups[i]);
+            }
+        }
+
+        fprintf(file, "\n");
 
         current = current->next;
     }
@@ -38,8 +46,8 @@ bool load_from_file(DoublyLinkedList *list, char file_name[]) {
     while (fgets(bufor, 255, file) != NULL) {
         bufor[strcspn(bufor, "\r\n")] = 0;
 
-        Contact c;
-        char* token;
+        Contact c = {0};
+        char *token;
 
         token = strtok(bufor, ";");
         if (token != NULL) c.ID = atoi(token);
@@ -64,6 +72,16 @@ bool load_from_file(DoublyLinkedList *list, char file_name[]) {
 
         token = strtok(NULL, ";");
         if (token != NULL) strcpy(c.address.postal_code, token);
+
+        token = strtok(NULL, ";");
+        char* token2;
+        token2 = strtok(token, ",");
+        for (int i = 0; i < 10; i++) {
+            if (token2 != NULL) {
+                strcpy(c.groups[i], token2);
+                token2 = strtok(NULL, ",");
+            }
+        }
 
         push_back(list, c);
     }
